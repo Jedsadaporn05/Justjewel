@@ -1,0 +1,193 @@
+﻿@model RegisterDto
+@{
+}
+
+<style>
+    html, body {
+        overflow-x: hidden;
+    }
+
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+    }
+
+    .register-container {
+        max-width: 550px;
+        margin-top: 90px;
+        margin-bottom: 60px;
+        padding: 60px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn {
+        border: none;
+        box-shadow: none;
+    }
+
+    .btn-submit {
+        background-color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    .form-text a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .form-text a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        background: black;
+        transition: width 0.3s ease;
+        left: 0;
+        bottom: -3px;
+    }
+
+    .form-text a:hover::after {
+        width: 100%;
+    }
+
+    .form-text a:hover {
+        color: black;
+    }
+
+</style>
+
+<div class="container register-container">
+    <div class="register-header">
+        <h2>Create Your Account</h2>
+        <p>Enjoy exclusive benefits with your account</p>
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+    <form method="post">
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="FirstName" placeholder=" ">
+            <label>First Name</label>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="LastName" placeholder=" ">
+            <label>Last Name</label>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Email" placeholder=" ">
+            <label>Email</label>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="PhoneNumber" placeholder=" ">
+            <label>Phone</label>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Address" placeholder=" ">
+            <label>Address</label>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Password" type="password" placeholder=" ">
+            <label>Password</label>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-4">
+            <input class="form-control" asp-for="ConfirmPassword" type="password" placeholder=" ">
+            <label>Confirm Password</label>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn-submit w-100">Create Account</button>
+        <div class="form-text mt-3 text-center">
+            <p class="">Already have an account?
+                <a class="link" asp-controller="Account" asp-action="Login">Sign in ></a>
+            </p>
+        </div>
+    </form>
+</div>

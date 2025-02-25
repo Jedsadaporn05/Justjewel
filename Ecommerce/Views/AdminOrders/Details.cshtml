@@ -1,0 +1,543 @@
+﻿@model Order
+@{
+    string paymentBadgeColor = "bg-danger";
+    if (Model.PaymentStatus == "pending")
+    {
+        paymentBadgeColor = "bg-warning text-dark";
+    }
+    else if (Model.PaymentStatus == "accepted")
+    {
+        paymentBadgeColor = "bg-success";
+    }
+    else if (Model.PaymentStatus == "canceled")
+    {
+        paymentBadgeColor = "bg-secondary";
+    }
+
+    string orderBadgeColor = "bd-danger";
+    if (Model.OrderStatus == "created")
+    {
+        orderBadgeColor = "bg-warning text-dark";
+    }
+    else if (Model.OrderStatus == "accepted")
+    {
+        orderBadgeColor = "bg-success";
+    }
+    else if (Model.OrderStatus == "canceled")
+    {
+        orderBadgeColor = "bg-secondary";
+    }
+    else if (Model.OrderStatus == "shipped")
+    {
+        orderBadgeColor = "bg-primary";
+    }
+    else if (Model.OrderStatus == "delivered")
+    {
+        orderBadgeColor = "bg-success";
+    }
+    else if (Model.OrderStatus == "returned")
+    {
+        orderBadgeColor = "bg-info text-dark";
+    }
+    else if (Model.OrderStatus == "deleted")
+    {
+        orderBadgeColor = "bg-dark";
+    }
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 95%;
+        margin-top: 110px;
+        margin-bottom: 110px;
+        padding: 50px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination {
+        display: flex; /* ใช้ Flexbox เพื่อจัด layout ให้ปุ่มเรียงในแถวเดียวกัน */
+        flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+        justify-content: center;
+        gap: 5px; /* เว้นระยะห่างระหว่างปุ่ม */
+    }
+
+    .page-item {
+        flex: 0 1 auto; /* ให้ปุ่มขยายเท่าที่จำเป็น และไม่กินพื้นที่มากเกิน */
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 8px 15px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* เพิ่ม "..." เมื่อข้อความยาวเกิน */
+        font-size: 14px;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn {
+        border: none;
+        box-shadow: none;
+    }
+
+    .btn-submit {
+        background-color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-details{
+        background-color: white;
+        border: 1px solid #2e2e2e;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-details:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-details:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-status {
+        background-color: white;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-status:hover {
+        background-color: #e9ecef;
+        transform: scale(1.05);
+    }
+
+    .form-text a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .form-text a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        background: black;
+        transition: width 0.3s ease;
+        left: 0;
+        bottom: -3px;
+    }
+    
+    .form-text a:hover::after {
+        width: 100%;
+    }
+    
+    .form-text a:hover {
+        color: black;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    input.form-check-input {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    /* เมื่อ checkbox ถูกเลือก (checked) */
+    input.form-check-input:checked {
+        background-color: #0071e3;
+        border-color: #005bb5;
+    }
+
+    input.form-check-input:hover {
+        border-color: #005bb5;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .back-button {
+        position: relative;
+        font-size: 20px;
+        text-decoration: none; /* ลบเส้นใต้ */
+        color: black;
+    }
+
+    .back-button:hover {
+        color: #ccc;
+    }
+
+</style>
+
+<div class="mx-auto container profile-container" style="width: 80%" ;>
+
+    <div class="row">
+    <!-- ปุ่ม Back -->
+    <a class="col-1 btn btn-link back-button" asp-controller="AdminOrders" asp-action="Index">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <!-- หัวข้อ Order Details -->
+    <h3 class="col-10 text-center mb-4">Order Details</h3>
+    </div>
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="border rounded py-3 px-4 h-100">
+                <h3 class="mb-4">Order</h3>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Order ID</div>
+                    <div class="col">@Model.Id</div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Delivery Address</div>
+                    <div class="col">@Model.DeliveryAddress</div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Payment Method</div>
+                    <div class="col">@Model.PaymentMethod</div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Payment Status</div>
+                    <div class="col">
+						<button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#paymentStatusModal">
+							<span class="btn btn-status badge rounded-pill @paymentBadgeColor">
+								@Model.PaymentStatus
+								<i class="ms-2 bi bi-pencil-square" style="font-size: 1rem;"></i> <!-- ไอคอนดินสอ -->
+							</span>
+						</button>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#paymentDetailsModal" class="btn btn-details" style="padding-left: 4px ; padding-top: 2px;  padding-right: 4px; padding-bottom: 2px; width: 100px;">
+                            Details
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Order Status</div>
+                    <div class="col">
+                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#orderStatusModal">
+                            <span class="btn btn-status badge rounded-pill @orderBadgeColor">
+                                @Model.OrderStatus
+                                <i class="ms-2 bi bi-pencil-square" style="font-size: 1rem;"></i> <!-- ไอคอนดินสอ -->
+                            </span>
+                        </button>
+
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col">Order Date</div>
+                    <div class="col">@Model.CreatedAt</div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="border rounded py-3 px-4 h-100">
+                <h3 class="mb-4">Client</h3>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Name</div>
+                    <div class="col">
+                        <a asp-controller="Users"
+                           asp-action="Details" asp-route-id="@Model.Client.Id" class="btn btn-details border border-dark">
+                            @(Model.Client.FirstName + " " + Model.Client.LastName)
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Number Orders</div>
+                    <div class="col">
+                        @ViewBag.NumOrders
+                    </div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Email</div>
+                    <div class="col">@Model.Client.Email</div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Phone</div>
+                    <div class="col">@Model.Client.PhoneNumber</div>
+                </div>
+
+                <div class="row mb-2 pb-2 border-bottom">
+                    <div class="col">Address</div>
+                    <div class="col">@Model.Client.Address</div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col">Registered At</div>
+                    <div class="col">@Model.Client.CreatedAt</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 130px">Product Details</th>
+                <th></th>
+                <th style="width:100px">Unit</th>
+                <th style="width:100px">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                decimal subtotal = 0;
+                foreach (var item in Model.Items)
+                {
+                    subtotal += item.UnitPrice * item.Quantity;
+
+                    <tr>
+                        <td>
+                            <a href="/Store/Details/@item.Product.Id" class=" mt-2" style="text-decoration: none;">
+                                <img src="/products/@item.Product.ImageFileName" alt="@item.Product.Name" class="cart-item-img cart-item" style="width: 100px; height: 100px; cursor: pointer;">
+                            </a>
+                        </td>
+                        <td>
+                            <h4>
+                                <a style="text-decoration: none; color: inherit;" asp-controller="Store"
+                                   asp-action="Details" asp-route-id="@item.Product.Id">
+                                    @item.Product.Name
+                                </a>
+                            </h4>
+                            @item.Product.Category<br>
+                            $@((item.UnitPrice).ToString("N2"))
+                        </td>
+                        <td>@item.Quantity</td>
+                        <td>$@((item.UnitPrice * item.Quantity).ToString("N2"))</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+
+    <div class="ms-auto mb-3" style="width: 250px">
+        <div class="row">
+            <div class="col fw-bold">Subtotal :</div>
+            <div class="col text-end">@(subtotal.ToString("N2"))$</div>
+        </div>
+        <div class="row">
+            <div class="col fw-bold">Shipping Fee :</div>
+            <div class="col text-end">@((Model.ShippingFee).ToString("N2"))$</div>
+        </div>
+        <div class="row">
+            <div class="col fw-bold">Total :</div>
+            <div class="col text-end">@((subtotal + Model.ShippingFee).ToString("N2"))$</div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="paymentStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Payment Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form method="get" asp-controller="AdminOrders" asp-action="Edit">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <label>Payment Status</label>
+                        <select class="form-select mb-3 mt-2" name="payment_status" asp-for="PaymentStatus">
+                            <option value="pending">pending</option>
+                            <option value="accepted">accepted</option>
+                            <option value="canceled">canceled</option>
+                        </select>
+                        <div class="row">
+                            <div class="col-6">
+                                <button type="submit" class="btn-submit border border-dark w-100">Save</button>
+                        </div>
+                            <div class="col-6">
+                                <button type="button" class="btn-submit border border-dark w-100" data-bs-dismiss="modal">Close</button>
+                        </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Order Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form method="get" asp-controller="AdminOrders" asp-action="Edit">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <label>Order Status</label>
+                        <select class="form-select mb-3 mt-2" name="order_status" asp-for="OrderStatus">
+                            <option value="created">created</option>
+                            <option value="accepted">accepted</option>
+                            <option value="canceled">canceled</option>
+                            <option value="shipped">shipped</option>
+                            <option value="delivered">delivered</option>
+                            <option value="returned">returned</option>
+                            <option value="deleted">deleted</option>
+                        </select>
+                        <div class="row">
+                            <div class="col-6">
+                                <button type="submit" class="btn-submit border border-dark w-100">Save</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn-submit border border-dark w-100" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Payment Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <p style="white-space: pre-wrap; font-family: monospace" class="mt-3">@Html.Raw(Model.PaymentDetails)</p>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <button type="button" class="btn-submit border border-dark w-100" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,253 @@
+﻿@model StoreSearchModel
+@{
+    ViewData["Title"] = "Category - " + ViewBag.Category;
+    ViewData["StorePage"] = true;
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    .category-title {
+        font-size: 32px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: black;
+        border-color: black;
+        color: white;
+    }
+
+    body {
+        padding-top: 60px;
+    }
+
+    .overlay {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .position-relative:hover .overlay {
+        opacity: 1;
+    }
+
+    .tooltip-text {
+        display: none;
+        position: absolute;
+        top: 50%;
+        right: 110%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 10;
+    }
+
+    .btn:hover + .tooltip-text {
+        display: block;
+    }
+
+    .profile-container {
+        max-width: 100%;
+        margin-top: 70px;
+        margin-bottom: 100px;
+        padding: 60px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-submit {
+        background-color: white;
+        color: black;
+        padding: 11px 20px;
+        border: none;
+        border-radius: 25px;
+        flex: 1;
+        text-align: center;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: black;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    a.btn-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+</style>
+
+<div class="container profile-container" style="width: 95%;">
+    <div class="profile-header mb-5">
+        <h2>@ViewBag.Category</h2>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                @for (int j = 0; j < ViewBag.Products.Count; j++)
+                {
+                    var product = ViewBag.Products[j];
+
+                    <div class="col-md-3 mb-5">
+                        <div class="card mb-3 rounded-3">
+                            <div class="position-relative">
+
+                                <img src="/products/@product.ImageFileName" class="card-img-top" alt="@product.Name" style="height: 400px; object-fit: cover;">
+
+                                <!-- Overlay with buttons -->
+                                <div class="overlay position-absolute top-0 end-0 p-2">
+                                    <div class="d-flex flex-column align-items-end">
+                                        <div class="position-relative">
+                                            <a class="btn btn-light mb-2" asp-controller="Store"
+                                               asp-action="Details" asp-route-id="@product.Id" role="button">
+                                                <i class="bi bi-search"></i>
+                                            </a>
+                                            <span class="tooltip-text">Detail</span>
+                                        </div>
+                                        <div class="position-relative">
+                                            <a href="#" class="btn btn-light" onclick="addToCart(this, @product.Id)">
+                                                <i class="bi bi-bag-fill"></i>
+                                            </a>
+                                            <span class="tooltip-text">Add to Cart</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="card-title">@product.Name</h6>
+                        <p class="card-text">$ @product.Price</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                string activeClass = i == ViewBag.PageIndex ? "active" : "";
+                <li class="page-item @activeClass">
+                    <a class="page-link" asp-route-pageIndex="@i"
+                       asp-route-category="@ViewBag.Category">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

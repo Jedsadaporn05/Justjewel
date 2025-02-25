@@ -1,0 +1,813 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Justjewel</title>
+    <link rel="icon" type="image/x-icon" href="~/images/Diamond.png"/>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ecommerce.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+        ::selection {
+            color: white;
+            background-color: black;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        /* ตั้งค่าเริ่มต้นให้ dropdown-menu ซ่อนอยู่ */
+        .dropdown-menu {
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px); /* เริ่มจากเลื่อนขึ้นเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* เพิ่มเอฟเฟกต์การเปลี่ยน */
+        }
+
+        /* เมื่อ dropdown-menu ถูกเปิด */
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0); /* เลื่อนกลับมาตำแหน่งเดิม */
+        }
+
+        /* สำหรับ offcanvas ด้านขวา */
+        .offcanvas-end {
+            transform: translateX(100%);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+
+        .offcanvas-end.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* สำหรับ offcanvas ด้านซ้าย */
+        .offcanvas-start {
+            transform: translateX(-100%);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+
+        .offcanvas-start.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .dropdown-toggle {
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: black;
+        }
+
+        .Alink {
+            color: #dfd6d1;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .Alink::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            display: block;
+            background: White;
+            transition: width 0.3s ease;
+            left: 0;
+            bottom: -0.5px;
+        }
+
+        .Alink:hover::after {
+            width: 100%;
+        }
+
+        .Alink:hover {
+            color: white;
+        }
+
+        .footeR h5 {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .footeR ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .footeR p {
+            margin-bottom: 0.5rem;
+        }
+
+        html, body {
+            margin: 0;
+        }
+
+        .wrapper {
+            /* ให้เนื้อหาขยายเต็มที่เมื่อจำเป็น */
+            margin-bottom: 0;
+
+        }
+
+        header {
+            flex: 1; /* เนื้อหาจะขยายเต็มที่ */
+        }
+
+        .footeR {
+            background-color: #343a40; 
+            color: #fff; 
+            padding: 20px 0;
+            flex-shrink: 0; /* ไม่ให้ Footer ยุบ */
+        }
+
+        .footer {
+            background-color: #212529;
+        }
+
+        .footer h3 {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .footer p {
+            font-size: 1rem;
+            color: #d1d1d1; /* สีข้อความที่อ่อนลง */
+        }
+
+        .checkout-button {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+            padding: 10px 20px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, transform 0.2s;
+         }
+
+        .checkout-button:hover {
+            background-color: black;
+            color: white;
+            ransform: translateY(-2px);
+        }
+
+        .checkout-button:active {
+            transform: scale(0.99);
+            outline: none;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
+
+        .quantity-control {
+            height: 50px;
+            border: 1px solid #F5F5F5;
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-input {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background-color: transparent;
+        }
+
+        .quantity-btn {
+            width: 100%;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #f0f0f0;
+            border-radius: 4rem;
+            transition: background-color 0.3s, transform 0.3s;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .quantity-btn:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .quantity-btn:active {
+             background-color: #f0f0f0;
+             transform: scale(0.95);
+             outline: none;
+             box-shadow: none;
+        }
+
+        .quantity-control-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-item {
+            position: relative;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .cart-item:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .cart-item .cart-item-img {
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .remove-item {
+            top: 10px;
+            right: 10px;
+            color: gray;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .remove-item:hover {
+                color: black;
+                transform: scale(1.2);
+        }
+
+        .cart-item-details h6 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .cart-item-details p {
+            font-size: 14px;
+        }
+
+        .cart-item-img {
+            border-radius: 8px;
+        }
+
+        .cart-summary p {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .quantity-control {
+            font-weight: 500;
+            text-decoration: none;
+}
+        .py-6 {
+            padding-top: 2.5rem !important;
+            padding-bottom: 3rem !important;
+        }
+
+        .rounded-5 {
+            border-radius: 4rem !important;
+        }
+
+        .btn-close {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-close:hover {
+            color: black;
+            transform: scale(1.2);
+        }
+
+        .btn-close-custom {
+
+        }
+
+        .btn-close-custom:hover {
+            color: black;
+        }
+
+        #navbar {
+            top: 0; /* Default: Navbar อยู่ในตำแหน่งปกติ */
+        }
+
+        #navbar.hidden {
+            top: -100px; /* เลื่อน Navbar ขึ้นไปจนพ้นหน้าจอ */
+            transition: top 0.5s ease; /* การเลื่อนขึ้นลงนุ่มนวล */
+        }
+
+        #navbar.scrolled {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: none;
+            width: 50px;
+            height: 50px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s ease, transform 0.3s ease; /* เพิ่ม Transition */
+        }
+
+        /* เมื่อปุ่มเลื่อนขึ้น */
+        #backToTopBtn:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+
+        /* เพิ่มการเลื่อนสไตล์ */
+        html {
+            scroll-behavior: smooth; /* การเลื่อนแบบนุ่มนวล */
+        }
+
+    </style>
+
+    <script>
+        // Function get shoppingCart => this function should allow to read the shopping cart from cookie
+        function getShoppingCart() { 
+            // Document.cookie contains all the cookies of our website with the following format
+            // cookie1=value1; cookie2=value2; cookie3=value3;
+
+            const cookieName = "shopping_cart";
+            let cookiesArray = document.cookie.split(';');
+
+            for (let i = 0; i < cookiesArray.length; i++) {
+                let cookie = cookiesArray[i];
+                if (cookie.includes(cookieName)) {
+                    let cookie_value = cookie.substring(cookie.indexOf("=") + 1);
+                    
+                    try {
+                        let cart = JSON.parse(atob(cookie_value));
+                        return cart;
+                    }
+                    catch (exception) {
+                        break;
+                    }
+                }
+            }
+            // Return an empty object
+            return {};
+        }
+
+        // Function to allow us to store the shopping cart into a cookie.
+        function saveCart(cart) {
+            let cartStr = btoa(JSON.stringify(cart)) // Convert cart into string
+            console.log(cartStr);
+            // Save this shopping cart into a cookie
+            let d = new Date(); // Create a new Date object with the current date and time
+            d.setDate(d.getDate() + 365);
+            let expires = d.toUTCString();
+            document.cookie = "shopping_cart=" + cartStr + ";expires=" + expires + ";path=/; SameSite=Strict; Secure"
+        }
+
+        function addToCart(button, id, redirectToCart = false) {
+
+            let cart = getShoppingCart();
+
+            let quantityInput = document.getElementById("quantity");
+            let quantityToAdd = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+
+
+            let quantity = cart[id];
+            if (isNaN(quantity)) {
+                cart[id] = quantityToAdd;
+            } else {
+                cart[id] = quantity + quantityToAdd;
+            }
+
+            saveCart(cart);
+            location.reload()
+            button.innerHTML = "Added <i class='bi bi-check-lg'></i>";
+
+            let cartSize = 0;
+            for (let cartItem of Object.values(cart)) {
+                cartSize += Number(cartItem);
+            }
+
+            document.getElementById("CartSize").innerHTML = cartSize
+            document.getElementById("CartSizeSidebar").innerHTML = cartSize;
+
+            if (quantityInput) {
+                quantityInput.value = 1;
+            }
+
+            if (redirectToCart) {
+                window.location.href = "/Cart";
+            }
+
+        }
+
+        function increase(id) {
+            let cart = getShoppingCart();
+
+            let quantity = cart[id]
+            if (isNaN(quantity)) {
+                // quantity is Not a Number => set it to 1
+                cart[id] = 1
+            }
+            else {
+                cart[id] = Number(quantity) + 1;
+            }
+
+            saveCart(cart);
+            location.reload()
+        }
+
+        function decrease(id) {
+            let cart = getShoppingCart();
+
+            let quantity = cart[id]
+            if (isNaN(quantity)) {
+                // quantity is Not a Number => exit
+                return
+            }
+
+            quantity = Number(quantity)
+
+            if (quantity > 1) {
+                cart[id] = quantity - 1
+                saveCart(cart)
+                location.reload()
+            }
+        }
+
+        function remove(id) {
+            let cart = getShoppingCart();
+
+            if (cart[id]) {
+                delete cart[id]
+                saveCart(cart)
+                location.reload()
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let lastScrollTop = 0;
+            const navbar = document.getElementById("navbar");
+
+            window.addEventListener("scroll", () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop > lastScrollTop) {
+                    // เมื่อเลื่อนลง -> ซ่อน Navbar
+                    navbar.classList.add("hidden");
+                } else {
+                    // เมื่อเลื่อนขึ้น -> แสดง Navbar
+                    navbar.classList.remove("hidden");
+                }
+
+                lastScrollTop = scrollTop; // อัพเดตค่าการเลื่อนล่าสุด
+            });
+        });
+
+    </script>
+    <header>
+
+        <nav class="navbar navbar-light fixed-top shadow-sm" id="navbar" style="background-color: white; transition: top 0.5s ease;">
+            <div class="container-fluid">
+                <div class="row w-100 d-flex justify-content-between align-items-center">
+                    <!-- Hamburger Menu -->
+                    <div class="col-4 d-flex">
+                        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+
+                    <!-- Center Icon -->
+                    <div class="col-4 d-flex justify-content-center">
+                        <a class="navbar-brand mx-auto" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img src="~/images/LogoNav1.png" style="width: 500px; height:50px; object-fit: contain;" />
+                        </a>
+                    </div>
+                    
+
+                    @using ecommerce.Services;
+                    <!-- Right Side with Icons and Dropdown -->
+                    <div class="col-4 d-flex justify-content-end">
+                        <div class="d-flex align-items-center">
+                            <button class="me-3" style="border: none; background-color: transparent;" data-bs-toggle="offcanvas" id="cartIcon" data-bs-target="#offcanvasCart" aria-controls="Cart">
+                                <i class="bi bi-bag-fill icon"></i>   
+
+                            </button>
+
+                            @using Microsoft.AspNetCore.Identity
+                            @inject SignInManager<ApplicationUser> SignInManager
+                            @inject UserManager<ApplicationUser> UserManager
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                var appUser = await UserManager.GetUserAsync(User);
+                                if (User.IsInRole("admin"))
+                                {
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle p-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.1rem;">
+                                            @(appUser!.FirstName + " " + appUser!.LastName + " (Admin)")
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="AdminOrders" asp-action="Index">Manage Orders</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index">Admin Control</a></li>
+
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Sign Out</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                                else if (User.IsInRole("client"))
+                                {
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle p-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.1rem;">
+                                            @(appUser!.FirstName + " " + appUser!.LastName + " (Client)")
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Store" asp-action="Index">Store</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="ClientOrders" asp-action="Index">My Orders</a></li>
+
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Sign Out</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle p-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.1rem;">
+                                            <i class="bi bi-person-fill" style="font-size: 1.5rem;">
+                                            </i>
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Sign Out</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                // Not Login
+                                <div class="dropdown">
+                                    <button class="btn dropdown-toggle p-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
+                                    </button>
+
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                                    </ul>
+                                </div>
+                            }
+                            
+                        </div>
+                   </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Toggle Right Sidebar (offcanvas) -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="Cart">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <button type="button" class="btn-close text-reset me-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <h5 id="Cart" class="flex-grow-1 text-center">Cart</h5>
+                <button class="me-3" style="border: none; background-color: white; cursor: default;">
+                    <i class="bi bi-bag-fill icon" style="cursor: default;"></i>
+                    <span id="CartSize" class="badge rounded-pill bg-danger" style="vertical-align: top;">
+                        @CartHelper.GetCartSize(Context.Request, Context.Response)
+                    </span>
+                </button>
+            </div>
+
+            <div class="offcanvas-body" id="cartContent">
+                @{
+                    var cartItems = ViewBag.CartItems as List<OrderItem>;
+                    var subtotal = ViewBag.Subtotal;
+                    var shippingFee = ViewBag.ShippingFee;
+                    var total = ViewBag.Total;
+                }
+
+                <div class="cart-container">
+                    @if (cartItems != null && cartItems.Any())
+                    {
+                        <div class="cart-items">
+                            @foreach (var item in cartItems)
+                            {
+                                <div class="cart-item d-flex mb-3">
+                                    <a href="/Store/Details/@item.Product.Id" class="me-3 mt-2" style="text-decoration: none;">
+                                        <img src="/products/@item.Product.ImageFileName" alt="@item.Product.Name" class="cart-item-img" style="width: 100px; height: 100px; cursor: pointer;">
+                                    </a>
+                                    <div class="cart-item-details">
+                                        <h6>
+                                            <a style="text-decoration: none; color: inherit;" asp-controller="Store"
+                                               asp-action="Details" asp-route-id="@item.Product.Id">
+                                                @item.Product.Name
+                                            </a>
+                                        </h6>
+                                        <!--<p>Quantity: @item.Quantity</p>-->
+                                        <p>Price : $@item.UnitPrice.ToString("N2")
+                                        <!--<p>Total: $@((item.Quantity * item.UnitPrice).ToString("N2"))</p>-->
+                                        <div class="quantity-control rounded-5">
+                                            <button class="quantity-btn" onclick="decrease(@item.Product.Id)">-</button>
+                                            <input type="number" id="quantity" value="@item.Quantity" min="1" class="quantity-input" readonly />
+                                            <button class="quantity-btn" onclick="increase(@item.Product.Id)">+</button>
+                                        </div>
+                                    </div>
+                                    <!-- ปุ่ม X (remove) -->
+                                    <i class="bi bi-x-lg h5 position-absolute remove-item" onclick="remove(@item.Product.Id)"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="cart-summary mt-4" style="margin-left: 0.5rem;">
+                            <p>Subtotal : $@subtotal.ToString("N2")</p>
+                            <p>Shipping Fee : $@shippingFee.ToString("N2")</p>
+                            <p><strong>Total : $@total.ToString("N2")</strong></p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center">Your cart is empty.</p>
+                    }
+                </div>
+                <div class="d-flex justify-content-between mt-3 quantity-control-container text-center">
+                    <a class="checkout-button text-decoration-none" asp-controller="Cart" asp-action="Index">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Left Sidebar (offcanvas) -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+            <div class="offcanvas-header d-flex justify-content-start align-items-center">
+                <button type="button" class="btn-close text-reset me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <h5 class="offcanvas-title close-button btn-close-custom mt-1" id="sidebarLabel" data-bs-dismiss="offcanvas" style="cursor: pointer;">CLOSE</h5>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="dropdown-item h5" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="dropdown-item h5" asp-area="" asp-controller="Store" asp-action="Index">Collections</a></li>
+
+                    <!-- Dropdown for Category -->
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-item h5" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: black;">
+                            Categories
+                            <i class="bi bi-caret-down-fill" style="font-size: 15px;"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Necklace">Necklace</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Bracelet">Bracelet</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Watche">Watche</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Brooche">Brooche</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Anklet">Anklet</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Cufflink">Cufflink</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Pin">Pin</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Chain">Chain</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Ring">Ring</a></li>
+                            <li><a class="dropdown-item h5" style="color: black;" href="/Store/Category?category=Earring">Earring</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+
+    </header>
+    @if (ViewData["HomePage"] != null)
+    {
+        @RenderBody()
+    }
+    else
+    {
+        <div class="container-fluid p-0">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
+    <div class="wrapper">
+        <!-- ส่วน Navbar หรือเนื้อหาอื่นๆ -->
+        <header>
+            @RenderBody()
+        </header>
+
+        <footer class="footeR bg-dark text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- คอลัมน์: ข้อมูลธุรกิจ -->
+                    <div class="col-md-4" style="margin-left: 5.5rem; margin-right: -5.5rem;">
+						<h5 class="mb-3">JUSTJEWEL</h5> 
+                        <p style="font-size: 16px;">CMM Street 349 | 678 Bangkok Thailand</p>
+						<p style="font-size: 15px;"><strong>Email :</strong> Contact@justjewel.com</p>
+						<p style="font-size: 15px;"><strong>Phone :</strong> +66 123 456 789</p>
+                    </div>
+                    <!-- คอลัมน์: ลิงก์สำหรับผู้ใช้ -->
+                    <div class="col-md-4" style="margin-left: 10.5rem; margin-right: -10.5rem;">
+                        <h5 class="mb-3">FOR YOU</h5>
+                        <ul class="list-unstyled" style="font-size: 16px;">
+                            <li><a class="text-white Alink" asp-controller="Store" asp-action="Index">Collections</a></li>
+                            <li><a href="#" class="text-white Alink"></a></li>
+                            <li><a href="#" class="text-white Alink"></a></li>
+                        </ul>
+                    </div>
+                    <!-- คอลัมน์: นโยบาย -->
+                    <div class="col-md-4" style="margin-left: 10.5rem; margin-right: -10.5rem;">
+                        <h5 class="mb-3">CONTACT US</h5>
+                        <ul class="list-unstyled" style="font-size: 16px;">
+                            <li><a href="https://www.facebook.com/" target="_blank" class="text-white Alink">Facebook</a></li>
+                            <li><a href="https://www.instagram.com/" target="_blank" class="text-white Alink">Instagram</a></li>
+                            <li><a href="https://www.youtube.com/" target="_blank" class="text-white Alink">Youtube</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- แถบด้านล่าง -->
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <p class="mb-0">&copy; JUSTJEWEL All Rights Reserved 2024</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Back to Top Button HTML -->
+        <button id="backToTopBtn" title="Go to top" class="mx-auto my-auto" style="font-size:20px;">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+
+        <script>
+            const backToTopBtn = document.getElementById("backToTopBtn");
+
+            // เมื่อมีการเลื่อนหน้าจอลงมา ให้แสดงปุ่ม
+            window.onscroll = function () {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    backToTopBtn.style.display = "block";
+                    backToTopBtn.style.opacity = 1;
+                } else {
+                    backToTopBtn.style.opacity = 0;
+                    setTimeout(() => {
+                        backToTopBtn.style.display = "none";
+                    }, 300);
+                }
+            };
+
+            // เมื่อกดปุ่ม จะทำให้เลื่อนขึ้นไปข้างบนแบบค่อยๆ
+            backToTopBtn.onclick = function () {
+                scrollToTop();
+            };
+
+            // ฟังก์ชันสำหรับเลื่อนกลับไปข้างบนแบบสมูท
+            function scrollToTop() {
+                const currentPosition = document.documentElement.scrollTop || document.body.scrollTop;
+                if (currentPosition > 0) {
+                    window.requestAnimationFrame(scrollToTop); // เรียกใช้ requestAnimationFrame เพื่อให้การเลื่อนเป็นขั้นตอน
+                    window.scrollTo(0, currentPosition - currentPosition / 8); // ค่อยๆ ลดตำแหน่ง scroll
+                }
+            }
+        </script>
+    </div>  
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

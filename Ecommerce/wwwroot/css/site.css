@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+html {
+    font-size: 14px;
+}
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background-color: #f9f9f9;
+    font-family: "Jost", sans-serif;
+}
+
+.hero {
+    background-image: url('/images/Hero 1.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-x: center;
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex; /* ใช้ flex เพื่อจัดกึ่งกลาง */
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #28a745;
+    margin: 0 auto;
+    position: relative;
+    animation: scaleCircle 0.3s ease-in-out 0.5s both;
+}
+
+.cancel-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex; /* ใช้ flex เพื่อจัดกึ่งกลาง */
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #28a745;
+    margin: 0 auto;
+    position: relative;
+    animation: scaleCircle 0.3s ease-in-out 0.5s both;
+}
+
+.check-icon {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    transform: rotate(0deg); /* แก้ rotation ที่ไม่จำเป็น */
+    animation: bounceIcon 0.3s ease-in-out 0.5s both;
+}
+
+.icon-line {
+    display: block;
+    height: 3px;
+    background-color: #28a745;
+    position: absolute;
+    border-radius: 2px;
+    animation: drawCheckmark 0.5s ease-in-out forwards;
+}
+
+.line-tip {
+    width: 20px;
+    height: 3px;
+    top: 18px; /* ปรับตำแหน่ง */
+    left: 8px;
+    transform: rotate(45deg);
+}
+
+.line-long {
+    width: 35px;
+    height: 3px;
+    top: 18px; /* ปรับตำแหน่ง */
+    right: 8px;
+    transform: rotate(-45deg);
+}
+
+@keyframes scaleCircle {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIcon {
+    0%, 100% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes drawCheckmark {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+
+    100% {
+        width: 100%;
+        opacity: 1;
+    }
+}

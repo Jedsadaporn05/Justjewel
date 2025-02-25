@@ -1,0 +1,347 @@
+﻿@{
+}
+
+<style>
+    html, body {
+        overflow-x: hidden;
+    }
+
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        justify-content: center;
+        background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 95%;
+        margin-top: 110px;
+        margin-bottom: 110px;
+        padding: 50px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: black;
+        border-color: black;
+        color: white;
+    }
+
+    .pagination {
+        display: flex; /* ใช้ Flexbox เพื่อจัด layout ให้ปุ่มเรียงในแถวเดียวกัน */
+        flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+        justify-content: center;
+        gap: 5px; /* เว้นระยะห่างระหว่างปุ่ม */
+    }
+
+    .page-item {
+        flex: 0 1 auto; /* ให้ปุ่มขยายเท่าที่จำเป็น และไม่กินพื้นที่มากเกิน */
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 8px 15px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* เพิ่ม "..." เมื่อข้อความยาวเกิน */
+        font-size: 14px;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn {
+        border: none;
+        box-shadow: none;
+    }
+
+    .btn-submit {
+        background-color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-details{
+        background-color: white;
+        border: 1px solid #2e2e2e;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-details:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-details:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-status {
+        width: 90px;
+        background-color: white;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .form-text a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .form-text a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        background: black;
+        transition: width 0.3s ease;
+        left: 0;
+        bottom: -3px;
+    }
+    
+    .form-text a:hover::after {
+        width: 100%;
+    }
+    
+    .form-text a:hover {
+        color: black;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    input.form-check-input {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    /* เมื่อ checkbox ถูกเลือก (checked) */
+    input.form-check-input:checked {
+        background-color: #0071e3;
+        border-color: #005bb5;
+    }
+
+    input.form-check-input:hover {
+        border-color: #005bb5;
+    }
+
+</style>
+
+<div class="mx-auto container profile-container" style="width: 100%">
+    <h2 class="text-center mb-4">List of Orders</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Unit</th>
+                <th>Total</th>
+                <th>Payment Method</th>
+                <th>Payment Status</th>
+                <th>Order Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (Order order in ViewBag.Orders)
+            {
+                int count = 0;
+                decimal total = order.ShippingFee;
+                foreach (OrderItem item in order.Items)
+                {
+                    count += item.Quantity;
+                    total += item.Quantity * item.UnitPrice;
+                }
+
+                string paymentBadgeColor = "bg-danger";
+                if (order.PaymentStatus == "pending")
+                {
+                    paymentBadgeColor = "bg-warning text-dark";
+                }
+                else if (order.PaymentStatus == "accepted")
+                {
+                    paymentBadgeColor = "bg-success";
+                }
+                else if (order.PaymentStatus == "canceled")
+                {
+                    paymentBadgeColor = "bg-secondary";
+                }
+
+                string orderBadgeColor = "bd-danger";
+                if (order.OrderStatus == "created")
+                {
+                    orderBadgeColor = "bg-warning text-dark";
+                }
+                else if (order.OrderStatus == "accepted")
+                {
+                    orderBadgeColor = "bg-success";
+                }
+                else if (order.OrderStatus == "canceled")
+                {
+                    orderBadgeColor = "bg-secondary";
+                }
+                else if (order.OrderStatus == "shipped")
+                {
+                    orderBadgeColor = "bg-primary";
+                }
+                else if (order.OrderStatus == "delivered")
+                {
+                    orderBadgeColor = "bg-success";
+                }
+                else if (order.OrderStatus == "returned")
+                {
+                    orderBadgeColor = "bg-info text-dark";
+                }
+                else if (order.OrderStatus == "deleted")
+                {
+                    orderBadgeColor = "bg-dark";
+                }
+
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@(order.Client.FirstName + " " + order.Client.LastName)</td>
+                    <td>@count</td>
+                    <td>$@(total)</td>
+                    <td>@order.PaymentMethod</td>
+                    <td><span class="btn-status badge rounded-pill @paymentBadgeColor">@order.PaymentStatus</span></td>
+                    <td><span class="btn-status badge rounded-pill @orderBadgeColor">@order.OrderStatus</span></td>
+                    <td>@order.CreatedAt.ToString("MM/dd/yyyy")</td>
+                    <td>
+                        <a class="btn btn-details btn-sm" asp-controller="AdminOrders" asp-action="Details"
+                           asp-route-id="@order.Id">Manage</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination mt-4">
+            <!-- Previous Button -->
+            <li class="page-item @(ViewBag.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" asp-route-pageIndex="@(ViewBag.PageIndex - 1)">Previous</a>
+            </li>
+
+            @* แสดงเฉพาะ 5 หน้า รอบๆ หน้าในปัจจุบัน *@
+            @{
+                int startPage = Math.Max(1, ViewBag.PageIndex - 2); // เริ่มจาก 2 หน้าก่อนหน้า
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.PageIndex + 2); // ถึง 2 หน้าถัดไป
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                string active = "";
+                if (i == ViewBag.PageIndex) active = "active";
+                <li class="page-item @active">
+                    <a class="page-link" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+
+            @if (endPage < ViewBag.TotalPages)
+            {
+                @if (endPage < ViewBag.TotalPages - 1)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                }
+                <li class="page-item">
+                    <a class="page-link" asp-route-pageIndex="@ViewBag.TotalPages">@ViewBag.TotalPages</a>
+                </li>
+            }
+
+            <!-- Next Button -->
+            <li class="page-item @(ViewBag.PageIndex == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-route-pageIndex="@(ViewBag.PageIndex + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+</div>

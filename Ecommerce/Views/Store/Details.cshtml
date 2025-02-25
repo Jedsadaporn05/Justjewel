@@ -1,0 +1,573 @@
+﻿@model Product;
+@{
+    ViewData["DetailPage"] = true;
+
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    .zoom-container {
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.3s ease;
+        height: 100%;
+        width: 100%;
+    }
+
+    .zoom-container img {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .zoom-container:hover img {
+        transform: scale(1.1); /* Default zoom level when hover */
+        cursor: url('/images/cursor-icon.svg'), auto;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        background-color: #000;
+        width: 100%;
+    }
+
+    .quantity-control {
+        height: 50px;
+        border: 1px solid #F5F5F5;
+        display: flex;
+        align-items: center;
+        border-radius: 25px;
+    }
+
+    .quantity-input {
+        width: 60px;
+        height: 100%;
+        text-align: center;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        background-color: transparent;
+    }
+
+
+    .quantity-btn {
+        width: 100%;
+        height: 50px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        transition: background-color 0.3s, transform 0.1s;
+    }
+
+    .quantity-btn:hover {
+        background-color: #f0f0f0;
+    }
+
+    .quantity-btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .quantity-btn:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .quantity-btn:active {
+        background-color: #f0f0f0;
+        transform: scale(0.95);
+        outline: none;
+        box-shadow: none;
+    }
+
+    .quantity-control-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    .btn-add-cart {
+        background-color: #000101;
+        color: white;
+        height: 50px;
+        width: 70%;
+    }
+    .btn-add-cart:hover {
+            background-color: #2e2e2e;
+            color: white;
+    }
+    .btn-add-cart:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+    }
+
+    .btn-buy {
+        background-color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+    }
+    .btn-buy:hover {
+        background-color: #2e2e2e;
+        color: white;
+    }
+
+    .btn-buy:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+    }
+
+    .product-shipping-delivers .content-info {
+        display: flex;
+        align-items: center;
+
+    }
+
+    .product-shipping-delivers .content-info i {
+        font-size: 1.2rem;
+        margin-right: 8px;
+    }
+
+    .product-shipping-delivers {
+        border: none;
+        padding: 0;
+    }
+
+    .product-shipping {
+        border: none;
+        padding: 0;
+    }
+
+    .body {
+    height: 100%;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 95%;
+        margin-top: 110px;
+        margin-bottom: 110px;
+        padding: 50px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination {
+        display: flex; /* ใช้ Flexbox เพื่อจัด layout ให้ปุ่มเรียงในแถวเดียวกัน */
+        flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+        justify-content: center;
+        gap: 5px; /* เว้นระยะห่างระหว่างปุ่ม */
+    }
+
+    .page-item {
+        flex: 0 1 auto; /* ให้ปุ่มขยายเท่าที่จำเป็น และไม่กินพื้นที่มากเกิน */
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 8px 15px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* เพิ่ม "..." เมื่อข้อความยาวเกิน */
+        font-size: 14px;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn {
+        border: none;
+        box-shadow: none;
+    }
+
+    .btn-submit {
+        background-color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-submit2 {
+        background-color: Black;
+        color: white;
+        height: 50px;
+        border: 1px solid #2e2e2e;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit2:hover {
+        background-color: white;
+        color: black;
+        transform: translateY(-2px);
+    }
+    
+    .btn-submit2:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-details{
+        background-color: white;
+        border: 1px solid #2e2e2e;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-details:hover {
+        background-color: #2e2e2e;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-details:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .btn-status {
+        width: 90px;
+        background-color: white;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .form-text a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .form-text a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        background: black;
+        transition: width 0.3s ease;
+        left: 0;
+        bottom: -3px;
+    }
+    
+    .form-text a:hover::after {
+        width: 100%;
+    }
+    
+    .form-text a:hover {
+        color: black;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    input.form-check-input {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    /* เมื่อ checkbox ถูกเลือก (checked) */
+    input.form-check-input:checked {
+        background-color: #0071e3;
+        border-color: #005bb5;
+    }
+
+    input.form-check-input:hover {
+        border-color: #005bb5;
+    }
+
+    .card-img-top {
+        transition: transform 0.3s ease;
+    }
+
+    .card-img-top:hover {
+        transform: scale(1.1);
+    }
+
+    .brand-color {
+        color: #FCCD2A;
+    }
+
+    .category-color {
+        color: #33c4ff;
+    }
+
+    .price-color {
+        color: #ff5733;
+    }
+
+    .date-color {
+        color: #6c757d;
+    }
+    
+    .mt-6 {
+        margin-top: 6rem;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-status {
+        width: 90px;
+        background-color: white;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+        cursor: pointer;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+    }
+
+    .btn-status:hover {
+        background-color: #e9ecef;
+        transform: scale(1.05);
+    }
+
+    .back-button {
+        position: absolute;
+        font-size: 20px;
+        text-decoration: none; /* ลบเส้นใต้ */
+        color: black;
+    }
+
+    .back-button:hover {
+        color: #ccc;
+    }
+
+    .btn-close {
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-close:hover {
+        color: black;
+        transform: scale(1.2);
+    }
+
+</style>
+
+<div class="mx-auto container profile-container" style="width: 100%;">
+    <div class="row h-100">
+        <div class="col-md-6" style="height: 80%">
+            <div class="zoom-container border" style="border-radius: 15px;">
+                <img src="/products/@Model.ImageFileName" class="img-fluid">
+            </div>
+        </div>
+            <div class="col-md-6 d-flex">
+            <!-- ปุ่ม Back -->
+            <a class="btn back-button" style="position: relative; top: -20px; right: -820px; align-self: flex-start;" onclick="history.back()">
+                <i class="fas fa-arrow-left" style="font-size: 25px;"></i>
+            </a>
+            <div class="p-4 w-100">
+                <p style="font-size: 2rem">@Model.Name</p>
+                <p style="font-size: 1.05rem">$@Model.Price</p>
+                <hr/>
+                <p style="font-size: 1.05rem">@Model.Brand</p>
+                <p style="font-size: 1.05rem">@Model.Description</p>
+
+                <!-- Quantity control and Add to Cart button -->
+                <div class="quantity-control-container d-flex mb-3 w-100">
+                    <div class="quantity-control d-flex align-items-center" style="width: 30%;">
+                        <button class="quantity-btn" onclick="decrease()">-</button>
+                        <input type="number" id="quantity" value="1" min="1" class="quantity-input" readonly />
+                        <button class="quantity-btn" onclick="increase()">+</button>
+                    </div>
+                    <button class="btn btn-submit2 ms-3" style="width: 70%;" id="addToCart" onclick="addToCart(this, @Model.Id)">ADD TO CART</button>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="action-buttons w-100">
+                    <button class="btn btn-submit w-100" onclick="addToCart(this, @Model.Id, true)">BUY NOW</button>
+                </div>
+                <div class="mt-3">
+                    Check out
+                </div>
+
+                <ul class="product-shipping-delivers list-group h-25">
+                    <li class="product-shipping list-group-item">
+                        <div class="content-info">
+                            <i class="bi bi-box-seam-fill"></i>
+                            <div class="content">
+                                Worldwide shipping discount on total orders over $100
+                            </div>
+                        </div>
+                    </li><li class="product-shipping list-group-item">
+                        <div class="content-info">
+                            <i class="bi bi-clock"></i>
+                            <div class="content">
+                                Delivers in : 3-7 Working Days
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <hr />
+				<p style="font-size: 1.05rem">Categories : @Model.Category</p>
+				<p style="font-size: 1.05rem">Availability : In Stock</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mouse scroll functionality for zoom and move image
+    const zoomContainer = document.querySelector('.zoom-container');
+    const img = zoomContainer.querySelector('img');
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isMouseDown = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Zoom in/out on scroll
+    zoomContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+
+        const rect = zoomContainer.getBoundingClientRect();
+        const imgWidth = img.offsetWidth * scale;
+        const imgHeight = img.offsetHeight * scale;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const oldScale = scale;
+        scale += e.deltaY < 0 ? 0.1 : -0.1;
+        scale = Math.min(Math.max(scale, 1), 2);
+
+        const imgNewWidth = img.offsetWidth * scale;
+        const imgNewHeight = img.offsetHeight * scale;
+
+        translateX -= (mouseX - translateX) * (scale - oldScale) / oldScale;
+        translateY -= (mouseY - translateY) * (scale - oldScale) / oldScale;
+
+        const maxTranslateX = (imgNewWidth - rect.width) / 2;
+        translateX = Math.min(maxTranslateX, Math.max(-maxTranslateX, translateX));
+
+        const maxTranslateY = (imgNewHeight - rect.height) / 2;
+        translateY = Math.min(maxTranslateY, Math.max(-maxTranslateY, translateY));
+
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    });
+
+    // Double click to reset zoom and position
+    zoomContainer.addEventListener('dblclick', () => {
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    });
+
+    function increase() {
+        let quantityInput = document.getElementById("quantity");
+        let currentQuantity = parseInt(quantityInput.value) || 1;
+        quantityInput.value = currentQuantity + 1;
+    }
+
+    function decrease() {
+        let quantityInput = document.getElementById("quantity");
+        let currentQuantity = parseInt(quantityInput.value) || 1;
+        if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+        }
+    }
+
+</script>

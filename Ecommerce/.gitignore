@@ -1,0 +1,12 @@
+﻿# ป้องกันข้อมูลสำคัญ
+appsettings.json
+appsettings.Development.json
+secrets.json
+.env
+*.config
+*.log
+
+# ป้องกันไฟล์ที่สร้างโดย Visual Studio
+.vs/
+bin/
+obj/

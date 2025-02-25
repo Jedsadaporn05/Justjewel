@@ -1,0 +1,171 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var orderId = ViewBag.OrderId;
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 600px;
+        margin-top: 210px;
+        margin-bottom: 210px;
+        padding: 70px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background-color: white;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 0;
+        flex: 1;
+        text-align: center;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: black;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-submit {
+        background-color: white;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 0;
+        flex: 1;
+        text-align: center;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: black;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit2 {
+        background-color: black;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 0;
+        flex: 1;
+        text-align: center;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit2:hover {
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    a.btn-submit {
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .success-checkmark {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background-color: white;
+        border: 4px solid White;
+    }
+
+    .checkmark-img {
+        width: 300px;
+        height: 300px;
+        padding: 15px;
+        margin-top: 0.3rem;
+    }
+
+    .btn-success {
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+    }
+
+    .custom-m {
+        margin-left: 5rem;
+        margin-right: 5rem;
+    }
+
+</style>
+
+<div class="container profile-container mx-auto" style="width: 900px">
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="text-center">
+            <!-- รูปภาพ Order Confirm -->
+            <div class="success-checkmark">
+                <img src="/images/BoxSuccess-white.png" alt="Success" class="checkmark-img">
+            </div>
+
+            <!-- ข้อความยืนยัน -->
+            <h3 class="mt-4 custom-m"><strong>THANK YOU FOR SHOPPING WITH US</strong></h3>
+            <h5 class="mt-4 mb-4 me-5 ms-5" style="color: #9f9f9f;"><strong style="color: black;">Order #@ViewBag.OrderId</strong> is being processed. We'll send you another email to notify you when your order ships.</h5>
+
+            <!-- ปุ่มดาวน์โหลด Invoice -->
+            @if (ViewBag.OrderId != null)
+            {
+                <a href="@Url.Action("DownloadInvoice", "Cart", new { orderId = ViewBag.OrderId })"
+                   class="btn btn-submit2 border border-dark my-3" style="width: 45%;">
+                    <i class="fa fa-download"></i> Download Invoice
+                </a>
+            }
+
+            <!-- ปุ่มกลับ -->
+            <a class="btn btn-submit border border-dark" style="width: 45%;" asp-controller="ClientOrders" asp-action="Index">
+                Back to Store
+            </a>
+        </div>
+    }
+
+</div>

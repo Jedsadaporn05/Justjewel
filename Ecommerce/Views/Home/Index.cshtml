@@ -1,0 +1,514 @@
+﻿@model List<Product>
+@{
+    ViewData["Title"] = "Home Page";
+    ViewData["HomePage"] = true;
+}
+
+<style>
+    html, body {
+        overflow-x: hidden;
+    }
+
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    .card-img-top {
+        transition: transform 0.3s ease;
+    }
+
+    .card-img-top:hover {
+        transform: scale(1.1);
+    }
+
+    .body {
+        background-color: white;
+    }
+
+    .carousel-indicators [data-bs-target] {
+        background-color: #dfd6d1;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%; 
+        border: none;
+        transition: background-color 0.3s ease, transform 0.3s ease; /* เพิ่ม transition */
+    }
+
+    .carousel-indicators .active {
+        background-color: black;
+        transform: scale(1.3); /* ขยายขนาดเมื่อ active */
+    }
+
+    .overlay {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .position-relative:hover .overlay {
+        opacity: 1;
+    }
+
+    .tooltip-text {
+        display: none;
+        position: absolute;
+        top: 50%;
+        right: 110%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 10;
+    }
+
+    .btn:hover + .tooltip-text {
+        display: block;
+    }
+
+    .py-6 {
+        padding-top: 4rem;
+    }
+
+    .herO {
+        height: 650px;
+        position: relative;
+        color: #fff;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        background-size: cover;
+    }
+
+    .Hero {
+        display: block;
+        height: 650px;
+        color: #fff;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        background-size: cover;
+    }
+
+    /* เพิ่ม Overlay */
+    .herO::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* ปรับความเข้ม */
+            z-index: 1;
+    }
+
+    /* ข้อความอยู่เหนือ Overlay */
+    .herO .container {
+            position: relative;
+            z-index: 2;
+    }
+
+    /* เพิ่มการ Fade Animation ให้เฉพาะ #heroCarousel */
+    #heroCarousel .carousel-item {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out; /* การ Fade-in/Fade-out */
+    }
+
+    #heroCarousel .carousel-item.active {
+        opacity: 1; /* แสดงภาพที่กำลัง Active */
+        transition: opacity 0.3s ease-in-out; /* ใช้ Transition เดียวกัน */
+    }
+
+    /* ปรับแต่งให้ Best Sellers Carousel ใช้การสไลด์ */
+    #carouselExampleControls .carousel-inner {
+        display: flex;
+        overflow: hidden; /* ซ่อนส่วนที่อยู่นอกเหนือจากขอบ */
+        position: relative;
+    }
+
+    /* เพิ่มการ Fade Animation ให้เฉพาะ #heroCarousel */
+    #heroCarousel2 .carousel-item {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out; /* การ Fade-in/Fade-out */
+    }
+
+    #heroCarousel2 .carousel-item.active {
+        opacity: 1; /* แสดงภาพที่กำลัง Active */
+        transition: opacity 0.3s ease-in-out; /* ใช้ Transition เดียวกัน */
+    }
+
+    /* ปรับแต่งให้ Best Sellers Carousel ใช้การสไลด์ */
+    #carouselExampleControls .carousel-inner {
+        display: flex;
+        overflow: hidden; /* ซ่อนส่วนที่อยู่นอกเหนือจากขอบ */
+        position: relative;
+    }
+
+    #carouselExampleControls .carousel-item {
+        flex: 0 0 100%; /* กำหนดให้แต่ละ item ขนาดเท่ากับ 100% */
+        transition: transform 0.2s ease-in-out; /* ใช้ transition สำหรับการสไลด์ */
+    }
+
+    /* เมื่อมีการเปลี่ยน slide จะมีการเลื่อนสไลด์ */
+    #carouselExampleControls .carousel-item-next,
+    #carouselExampleControls .carousel-item-prev,
+    #carouselExampleControls .carousel-item.active {
+        transform: translateX(0); /* แสดงในตำแหน่งเดิม */
+    }
+
+    /* การเลื่อนซ้ายไปขวาเมื่อเปลี่ยนสไลด์ */
+    #carouselExampleControls .carousel-item-next {
+        transform: translateX(100%); /* เลื่อนไปทางขวา */
+    }
+
+    #carouselExampleControls .carousel-item-prev {
+        transform: translateX(-100%); /* เลื่อนไปทางซ้าย */
+    }
+
+    .my-6 {
+        margin-top: 5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .my-7 {
+        margin-top: 3rem !important;
+        margin-bottom: 6rem !important;
+    }
+
+    #carouselExampleControls2 .carousel-inner {
+        display: flex;
+        overflow: hidden; /* ซ่อนส่วนที่อยู่นอกเหนือจากขอบ */
+        position: relative;
+    }
+
+    #carouselExampleControls2 .carousel-item {
+        flex: 0 0 100%; /* กำหนดให้แต่ละ item ขนาดเท่ากับ 100% */
+        transition: transform 0.2s ease-in-out; /* ใช้ transition สำหรับการสไลด์ */
+    }
+
+    /* เมื่อมีการเปลี่ยน slide จะมีการเลื่อนสไลด์ */
+    #carouselExampleControls2 .carousel-item-next,
+    #carouselExampleControls2 .carousel-item-prev,
+    #carouselExampleControls2 .carousel-item.active {
+        transform: translateX(0); /* แสดงในตำแหน่งเดิม */
+    }
+
+    /* การเลื่อนซ้ายไปขวาเมื่อเปลี่ยนสไลด์ */
+    #carouselExampleControls2 .carousel-item-next {
+        transform: translateX(100%); /* เลื่อนไปทางขวา */
+    }
+
+    #carouselExampleControls2 .carousel-item-prev {
+        transform: translateX(-100%); /* เลื่อนไปทางซ้าย */
+    }
+
+    /* Change the color of the carousel arrows */
+    .caro-b {
+        background-color: black !important; /* Set the arrows' color to black */
+        filter: invert(1); /* Use invert to change the default icon color to black */
+    }
+
+    /* Change color on hover */
+    .caro-b:hover {
+        background-color: darkgray; /* Set the color to dark gray when hovered */
+        filter: invert(1); /* Maintain the color inversion when hovered */
+    }
+
+    /* ปุ่มจะถูกซ่อนโดยค่าเริ่มต้น */
+    .carousel-control-prev,
+    .carousel-control-next {
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform: scale(0.9); /* ขนาดเล็กลงเล็กน้อยในตอนเริ่ม */
+    }
+
+    .carousel:hover .carousel-control-prev,
+    .carousel:hover .carousel-control-next,
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 1;
+        transform: scale(1); /* กลับมาขนาดปกติ */
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        transform: scale(1.1);
+    }
+
+</style>
+
+<div class="" style="background-color: white;">
+<div id="heroCarousel" class="carousel slide carousel-fade mt-5" data-bs-ride="carousel" data-bs-interval="4000">
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <!-- สไลด์ที่ 1 -->
+        <div class="carousel-item active">
+            <div class="herO py-6" style="background-image: url('/images/Hero 1.png'); background-size: cover; background-position-x: center;">
+                <div class="container text-white py-5">
+                    <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                        <div class="col-md-6 mt-5">
+                            <h2>Forever Elegance</h2>
+                            <p>
+                                Our collection blends timeless elegance with modern design, creating pieces that are both captivating and unique. Whether for a special occasion or everyday luxury, discover the art of adornment with Seraphine.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- สไลด์ที่ 2 -->
+        <div class="carousel-item">
+            <div class="herO py-6" style="background-image: url('/images/Hero 3.png'); background-size: cover; background-position-x: center;">
+                <div class="container text-white py-5">
+                    <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                        <div class="col-md-6 mt-5">
+                            <h2>Timeless Style</h2>
+                            <p>
+                                Discover elegant designs that never go out of style. Celebrate your individuality with pieces made for you.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- สไลด์ที่ 3 -->
+        <div class="carousel-item">
+            <div class="herO py-6" style="background-image: url('/images/Hero 6.png'); background-size: cover; background-position-x: center;">
+                <div class="container text-white py-5">
+                    <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                        <div class="col-md-6 mt-5">
+                            <h2>Luxury Redefined</h2>
+                            <p>
+                                Experience the perfect blend of luxury and sophistication. Explore our newest arrivals for a touch of elegance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ปุ่มเลื่อน -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container my-5">
+	<h1 style="margin-bottom: 20px;">Best Sellers</h1>
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i += 4)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="row">
+                        @for (int j = i; j < i + 4 && j < Model.Count; j++)
+                        {
+                            var product = Model[j];
+                            <div class="col-md-4 col-lg-3">
+                                <div class="card mb-3 rounded-3">
+                                    <div class="position-relative">
+                                            <img src="/products/@product.ImageFileName" class="card-img-top" alt="@product.Name" style="height: 350px; object-fit: cover;">
+
+                                        <!-- Overlay with buttons -->
+                                            <div class="overlay position-absolute top-0 end-0 p-2">
+                                            <div class="d-flex flex-column align-items-end">
+                                                <div class="position-relative">
+                                                    <a class="btn btn-light mb-2" 
+                                                    asp-controller="Store" 
+                                                    asp-action="Details" asp-route-id="@product.Id" role="button">
+                                                        <i class="bi bi-search"></i>
+                                                    </a>
+                                                    <span class="tooltip-text">Detail</span>
+                                                </div>
+                                                <div class="position-relative">
+                                                        <a href="#" class="btn btn-light" onclick="addToCart(this, @product.Id)">
+                                                        <i class="bi bi-bag-fill"></i>
+                                                    </a>
+                                                    <span class="tooltip-text">Add to Cart</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6 class="card-title">@product.Name</h6>
+                                <p class="card-text">$ @product.Price</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="carousel-indicators position-absolute" style="bottom: -50px; z-index: 2;">
+            @for (int i = 0; i < (Model.Count + 3) / 4; i++)
+            {
+                <button type="button" data-bs-target="#carouselExampleControls" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @i"></button>
+            }
+        </div>
+
+        <!-- Carousel Controls -->
+            <button class="carousel-control-prev caro-b" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" style="position: absolute; left: -195px; z-index: 100; background-color: transparent; border: none;">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+            <button class="carousel-control-next caro-b" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next" style="position: absolute; right: -195px; z-index: 100; background-color: transparent; border: none;">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+<div class="container my-6">
+	<h1>New Arrivals</h1>
+</div>
+<div class="Hero py-6" style="background-image: url('/images/Hero 2.png'); background-size: cover; background-position-x: center; padding-bottom: 4rem;">
+
+</div>
+<div class="container my-7">
+    <div id="carouselExampleControls2" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i += 4)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="row">
+                        @for (int j = i; j < i + 4 && j < Model.Count; j++)
+                        {
+                            var product = Model[j];
+                            <div class="col-md-4 col-lg-3">
+                                <div class="card mb-3 rounded-3">
+                                    <div class="position-relative">
+                                        <img src="/products/@product.ImageFileName" class="card-img-top" alt="@product.Name" style="height: 350px; object-fit: cover;">
+
+                                        <!-- Overlay with buttons -->
+                                            <div class="overlay position-absolute top-0 end-0 p-2" onclick="goToDetails(@product.Id)" style="cursor: pointer;">
+                                            <div class="d-flex flex-column align-items-end">
+                                                <div class="position-relative">
+                                                    <a class="btn btn-light mb-2"
+                                                       asp-controller="Store"
+                                                       asp-action="Details" asp-route-id="@product.Id" role="button">
+                                                        <i class="bi bi-search"></i>
+                                                    </a>
+                                                    <span class="tooltip-text">Detail</span>
+                                                </div>
+                                                <div class="position-relative">
+                                                    <a href="#" class="btn btn-light" onclick="addToCart(this, @product.Id)">
+                                                        <i class="bi bi-bag-fill"></i>
+                                                    </a>
+                                                    <span class="tooltip-text">Add to Cart</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6 class="card-title">@product.Name</h6>
+                                <p class="card-text">$ @product.Price</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="carousel-indicators position-absolute" style="bottom: -50px; z-index: 2;">
+            @for (int i = 0; i < (Model.Count + 3) / 4; i++)
+            {
+                <button type="button" data-bs-target="#carouselExampleControls2" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @i"></button>
+            }
+        </div>
+
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev caro-b" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="prev" style="position: absolute; left: -195px; z-index: 100; background-color: transparent; border: none;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next caro-b" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="next" style="position: absolute; right: -195px; z-index: 100; background-color: transparent; border: none;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+    </div>
+</div>
+
+
+    <div id="heroCarousel2" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel2" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel2" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <!-- สไลด์ที่ 1 -->
+            <div class="carousel-item active">
+                <div class="herO py-6" style="background-image: url('/images/Hero 7.png'); background-size: cover; background-position-x: center;">
+                    <div class="container text-white py-5">
+                        <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                            <div class="col-md-6 mt-5">
+                                <h2>Forever Elegance</h2>
+                                <p>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- สไลด์ที่ 2 -->
+            <div class="carousel-item">
+                <div class="herO py-6" style="background-image: url('/images/Hero 5.png'); background-size: cover; background-position-x: center;">
+                    <div class="container text-white py-5">
+                        <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                            <div class="col-md-6 mt-5">
+                                <h2>Timeless Style</h2>
+                                <p>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- สไลด์ที่ 3 -->
+            <div class="carousel-item">
+                <div class="herO py-6" style="background-image: url('/images/Hero 4 Color.png'); background-size: cover; background-position-x: center;">
+                    <div class="container text-white py-5">
+                        <div class="row align-items-center text-center justify-content-center" style="margin-top: 200px">
+                            <div class="col-md-6 mt-5">
+                                <h2>Luxury Redefined</h2>
+                                <p>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ปุ่มเลื่อน -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel2" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel2" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>

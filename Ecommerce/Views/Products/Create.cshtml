@@ -1,0 +1,209 @@
+﻿@model ProductDto
+@{
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    body {
+        background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 750px;
+        margin-top: 140px;
+        margin-bottom: 140px;
+        padding: 60px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+       color: #005bb5;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-submit {
+        background-color: white;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 25px;
+        flex: 1;
+        text-align: center;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+       background-color: black;
+       color: white;
+       ransform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+       transform: scale(0.99);
+       outline: none;
+       box-shadow: none;
+       transform: scale(0.98);
+    }
+
+    a.btn-submit {
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       text-decoration: none;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+</style>
+
+<div class="container profile-container">
+    <div class="profile-header">
+        <h2>Add New Product</h2>
+        <p>Manage your products</p>
+    </div>
+        <form  method="post" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Brand</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Brand" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Category</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="Category">
+                        <option value="Necklace">Necklace</option>
+                        <option value="Ring">Ring</option>
+                        <option value="Earring">Earring</option>
+                        <option value="Bracelet">Bracelet</option>
+                        <option value="Watche">Watche</option>
+                        <option value="Brooche">Brooche</option>
+                        <option value="Anklet">Anklet</option>
+                        <option value="Cufflink">Cufflink</option>
+                        <option value="Pin">Pin</option>
+                        <option value="Chain">Chain</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Price</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Price" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Description</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Description" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <label class="col-sm-4 col-form-label">Image</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="ImageFile" type="file" accept="image/*" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6 d-grid">
+                    <button type="submit" class="btn btn-submit border border-dark">Submit</button>
+                </div>
+                <div class="col-sm-6 d-grid">
+                    <a class="btn btn-submit border border-dark" asp-controller="Products" asp-action="Index" role="button">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+</div>
+

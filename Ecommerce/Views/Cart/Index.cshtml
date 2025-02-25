@@ -1,0 +1,375 @@
+﻿@model CheckoutDto
+@{
+    
+}
+
+<style>
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+    body {
+        padding-top: 60px;
+    }
+
+    td {
+        border: none;
+    }
+
+    .custom-btn {
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+        padding: 10px 20px;
+        width: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .custom-btn:hover {
+        background-color: black;
+        color: white;
+        ransform: translateY(-2px);
+    }
+
+    .custom-btn:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    .cart-item {
+        position: relative;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cart-item:hover {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+        transform: scale(1.02);
+    }
+
+    .cart-item .cart-item-img {
+        border-radius: 5px;
+        object-fit: cover;
+    }
+
+    .remove-item {
+        color: gray;
+        cursor: pointer;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .remove-item:hover {
+        color: black;
+        transform: scale(1.2);
+    }
+
+    .profile-container {
+        max-width: 100%;
+        margin-top: 50px;
+        margin-bottom: 200px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .quantity-control {
+        border: 1px solid #F5F5F5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+    }
+
+    .quantity-input {
+        width: 60px;
+        height: 30px;
+        text-align: center;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+    }
+
+    .quantity-btn {
+        width: 100%;
+        height: 50px;
+        border: none;
+        font-size: 1.5rem;
+        transition: background-color 0.3s, transform 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+        padding: 0 10px;
+    }
+
+    .quantity-btn:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+        border-radius: 4rem;
+        transition: background-color 0.3s, transform 0.3s;
+        transform: scale(1.1);
+    }
+
+    .quantity-btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .quantity-btn:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .quantity-btn:active {
+        background-color: #f0f0f0;
+        transform: scale(0.95);
+        outline: none;
+        box-shadow: none;
+    }
+
+    .rounded-5 {
+        border-radius: 4rem !important;
+    }
+
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+
+    .form-text a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .form-text a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        background: black;
+        transition: width 0.3s ease;
+        left: 0;
+        bottom: -3px;
+    }
+
+    .form-text a:hover::after {
+        width: 100%;
+    }
+
+    .form-text a:hover {
+        color: black;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    input.form-check-input {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+</style>
+
+<div class="row mx-auto container profile-container" style="width: 90%;">
+    <div class="col-md-8 p-3">
+        <h4>Shopping Cart</h4>
+
+        @if (ViewBag.CartItems == null || !((List<OrderItem>)ViewBag.CartItems).Any())
+        {
+            <div class="mt-4 text-center" style="padding: 9rem;">
+                <p>Your cart is empty.</p>
+            </div>
+        }
+        else
+        {
+            <table class="table align-middle">
+                <tbody>
+                    @foreach (var item in ViewBag.CartItems)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/Store/Details/@item.Product.Id" class=" mt-2" style="text-decoration: none;">
+                                    <img src="/products/@item.Product.ImageFileName" alt="@item.Product.Name" class="cart-item-img cart-item" style="width: 150px; height: 150px; cursor: pointer;">
+                                </a>
+                            </td>
+                            <td>
+                                <h4>@item.Product.Name</h4>
+                                <p>
+                                    Brand : @item.Product.Brand<br>
+                                    Category : @item.Product.Category<br>
+                                    Price : $@(item.Product.Price)<br>
+                                </p>
+                            </td>
+                            <td class="">
+                                <div class="quantity-control rounded-5">
+                                    <button class="quantity-btn" onclick="decrease(@item.Product.Id)">-</button>
+                                    <input type="number" id="quantity" value="@item.Quantity" min="1" class="quantity-input" readonly />
+                                    <button class="quantity-btn" onclick="increase(@item.Product.Id)">+</button>
+                                </div>
+                            </td>
+                            <td>$@(item.UnitPrice * item.Quantity)</td>
+                            <td>
+                                <i class="bi bi-x-lg h4 remove-item" onclick="remove(@item.Product.Id)"></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="col-md-4">
+        <div class="rounded-4 my-2 p-3" style="background-color: #fafafa;">
+            <h4 class="mb-3 mt-2">Order Summary</h4>
+
+            @using Microsoft.AspNetCore.Identity
+            @inject SignInManager<ApplicationUser> SignInManager
+
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <div class="row">
+                    <div class="col">
+                        <p>Subtotal :</p>
+                    </div>
+                    <div class="col">
+                        <p class="text-end">@(ViewBag.Subtotal)$</p>
+                    </div>
+                </div>
+
+				<div class="row">
+					<div class="col d-grid">
+						<a class="btn custom-btn" asp-controller="Account" asp-action="Login">Sign In</a>
+					</div>
+                    <div class="col d-grid">
+                        <a class="btn custom-btn" asp-controller="Account" asp-action="Register">Sign Up</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <form method="post" id="checkoutForm">
+                    <div class="form-floating mb-2">
+                        <input asp-for="DeliveryAddress" type="text" class="form-control" placeholder=" ">
+                        <label class="form-label">Delivery Address</label>
+                        <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Select Payment Method</label>
+                        <select class="form-select" asp-for="PaymentMethod" id="paymentMethod" onchange="updateFormAction()" style="height: 57px; border-radius: 8px;">
+                            <option value="cash">Cash on Delivery</option>
+                            <option value="credit_card" >Credit Card</option>
+                        </select>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col">
+                            <p>Subtotal :</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-end">@(ViewBag.Subtotal)$</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <p>Shipping :</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-end">@(ViewBag.ShippingFee)$</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+							<p><strong>Total :</strong></p>
+                        </div>
+                        <div class="col">
+							<p class="text-end"><strong>@(ViewBag.Total)$</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button class="btn custom-btn" type="submit">Checkout</button>
+                    </div>
+                </form>
+            }
+            <script>
+                function updateFormAction() {
+                    var form = document.getElementById('checkoutForm');
+                    var paymentMethod = document.getElementById('paymentMethod').value;
+
+                    // Change the action based on the selected payment method
+                    if (paymentMethod === 'credit_card') {
+                        form.action = '@Url.Action("CheckOut", "Cart")';
+                    } else {
+                        form.action = '@Url.Action("Index", "Home")';
+                    }
+                }
+            </script>
+        </div>
+    </div>
+    
+</div>

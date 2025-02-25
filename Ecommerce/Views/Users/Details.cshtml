@@ -1,0 +1,319 @@
+﻿@model ApplicationUser
+@{
+}
+
+<style>
+    html, body {
+        overflow-x: hidden;
+    }
+
+    ::selection {
+        color: white;
+        background-color: black;
+    }
+
+    body {
+        background-color: #f9f9f9;
+    }
+
+    .profile-container {
+        max-width: 600px;
+        margin-top: 180px;
+        margin-bottom: 200px;
+        padding: 60px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background-color: #0071e3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #005bb5;
+    }
+
+    .form-text a {
+        color: #0071e3;
+    }
+
+    .form-text a:hover {
+        color: #005bb5;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .btn-submit {
+        background-color: white;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 25px;
+        flex: 1;
+        text-align: center;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: black;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: scale(0.99);
+        outline: none;
+        box-shadow: none;
+        transform: scale(0.98);
+    }
+
+    a.btn-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    input.form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, border-radius 0.3s ease;
+    }
+
+    input.form-control:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    /* Floating label style */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating label {
+        padding-left: 10px;
+        color: #666;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .form-control:not(:placeholder-shown) + label,
+    .form-control:focus + label {
+        top: -1px;
+        left: 2px;
+        font-size: 0.9rem;
+        color: black;
+    }
+
+    .btn-status {
+        width: 90px;
+        background-color: white;
+        border-radius: 15px;
+        transition: background-color 0.3s ease, transform 0.2s;
+        cursor: pointer;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+    }
+
+    .btn-status:hover {
+        background-color: #e9ecef;
+        transform: scale(1.05);
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: black;
+        box-shadow: none;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+    .cart-item {
+        position: relative;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cart-item:hover {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+        transform: scale(1.02);
+    }
+
+    .cart-item .cart-item-img {
+        border-radius: 5px;
+        object-fit: cover;
+    }
+
+</style>
+
+<div class="container  profile-container">
+    <div class="row">
+        <div class="col-lg-12 mx-auto">
+            <h2 class="text-center mb-3">User Details</h2>
+            <hr />
+
+            @* Firstname *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Firstname</div>
+                <div class="col-sm-8">@Model.FirstName</div>
+            </div>
+
+            @* Lastname *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Lastname</div>
+                <div class="col-sm-8">@Model.LastName</div>
+            </div>
+
+            @* Email *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Email</div>
+                <div class="col-sm-8">@Model.Email</div>
+            </div>
+
+            @* Phone *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Phone</div>
+                <div class="col-sm-8">@Model.PhoneNumber</div>
+            </div>
+
+            @* Address *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Address</div>
+                <div class="col-sm-8">@Model.Address</div>
+            </div>
+
+            @* Role *@
+            <div class="row mb-1" style="padding: 0;">
+                <div class="col-sm-4">Role</div>
+                <div class="col-sm-8">
+                    @{
+                        var roles = ViewBag.Roles;
+                        var rolesStr = String.Join(", ", roles);
+
+                        string color = "bg-secondary";
+
+                        if (roles.Contains("admin"))
+                        {
+                            color = "bg-danger";
+                        }
+                        else if (roles.Contains("client"))
+                        {
+                            color = "bg-primary";
+                        }
+                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#roleModal">
+                            <span class="btn-status badge rounded-pill @color">@rolesStr
+                                <i class="ms-2 bi bi-pencil-square" style="font-size: 1rem;"></i> <!-- ไอคอนดินสอ -->
+                            </span>
+                        </button>
+
+                    }
+                </div>
+            </div>
+
+            @* Created At *@
+            <div class="row mb-2">
+                <div class="col-sm-4">Date</div>
+                <div class="col-sm-8">@Model.CreatedAt</div>
+            </div>
+
+            <hr />
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>@TempData["ErrorMessage"]</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            else if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@TempData["SuccessMessage"]</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @* Button *@
+			<div class="btn-container mt-4">
+				<button type="button" class="btn-submit border border-dark" data-bs-toggle="modal" data-bs-target="#deleteModal">
+					Delete
+				</button>
+
+                <a class="btn-submit border border-dark" onclick="history.back()" style="cursor: pointer;">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="roleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get" asp-controller="Users" asp-action="EditRole">
+                    <input type="hidden" value="@Model.Id" name="id" />
+                    <label class="mb-2">Select User Role</label>
+                    <select class="form-select mb-3" name="newRole" asp-items="@ViewBag.SelectItems" style="height: 57px; border-radius: 8px;"></select>
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="submit" class="btn-submit border border-dark w-100">Save changes</button>
+                        </div>
+                        <div class="col-6">
+							<button type="button" class="btn-submit border border-dark w-100" data-bs-dismiss="modal">Close</button>
+						</div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete User Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user account?</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn-submit border border-dark w-100" role="button" asp-controller="Users" asp-action="DeleteAccount" asp-route-id="@Model.Id">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn-submit border border-dark w-100" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+		    </div>
+        </div>
+    </div>
+</div>
